@@ -11,7 +11,7 @@ class Viterbi:
         self.num_states = len(self.states)
         self.num_obs = len(self.obs)
         self.table = np.zeros((self.num_states, self.num_obs + 1))
-        self.backtrack_table = np.empty((self.num_states, self.num_obs), dtype="S15")
+        self.backtrack_table = np.empty((self.num_states, self.num_obs), dtype="S32")
 
     def run(self):
         #START VITERBI
@@ -39,22 +39,30 @@ class Viterbi:
         #END VITERBI
         #START BACKTRACK
         #get most probable state in the last observation
-        prob = []
-        for i in range(self.num_states):
-            prob.append(self.table[i][self.num_obs])
-        max_prob = max(prob)
-        print(max_prob)
-        #follow the backtrack
-        for i in range(self.num_obs, 0, -1):
-            break
-
+        backtrack = []
+        for i in range(self.num_obs, -1, -1):
+            prob = []
+            save_max = 0
+            for j in range(self.num_states):
+                prob.append(self.table[j][i])
+                if(self.table[j][i] > prob[save_max]):
+                    save_max = j
+            backtrack.append(self.states[save_max])
+        backtrack.reverse()
+        print(backtrack)
         #END BACKTRACK
 
     def print_table(self):
-        print(DataFrame(self.table))
+        df = DataFrame(self.table)
+        df.columns = ['Time 0'] + self.obs
+        print("Probability Table")
+        print(df)
 
     def print_backtrack_table(self):
-        print(DataFrame(self.backtrack_table))
+        df = DataFrame(self.backtrack_table)
+        df.columns = self.obs
+        print("Backtrack Table")
+        print(df)
 
 if __name__ == "__main__":
     states = ["Balanced", "Loaded_Heads", "Loaded_Tails"]
