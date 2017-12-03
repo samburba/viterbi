@@ -11,7 +11,8 @@ class Viterbi:
         self.num_states = len(self.states)
         self.num_obs = len(self.obs)
         self.table = np.zeros((self.num_states, self.num_obs + 1))
-        self.backtrack_table = np.empty((self.num_states, self.num_obs), dtype="S32")
+        self.backtrack_table = np.empty((self.num_states, self.num_obs), dtype="U16")
+        self.backtrack = [self.num_states]
 
     def run(self):
         #START VITERBI
@@ -48,8 +49,8 @@ class Viterbi:
                 if(self.table[j][i] > prob[save_max]):
                     save_max = j
             backtrack.append(self.states[save_max])
-        backtrack.reverse()
-        print(backtrack)
+        #make more readable by reversing
+        self.backtrack = backtrack[::-1]
         #END BACKTRACK
 
     def print_table(self):
@@ -63,6 +64,12 @@ class Viterbi:
         df.columns = self.obs
         print("Backtrack Table")
         print(df)
+
+    def print_backtrack(self):
+        print("The most probable sequence of states is: ", end='')
+        for bt in self.backtrack:
+            print(bt + " ", end='')
+        print("")
 
 if __name__ == "__main__":
     states = ["Balanced", "Loaded_Heads", "Loaded_Tails"]
@@ -81,3 +88,4 @@ if __name__ == "__main__":
     v.run()
     v.print_table()
     v.print_backtrack_table()
+    v.print_backtrack()
