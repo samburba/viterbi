@@ -3,6 +3,7 @@ import pandas_datareader as pdr
 import pandas as pd
 import matplotlib.pyplot as plt
 from viterbi import Viterbi
+from config import initial, trans, emiss
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
@@ -21,9 +22,8 @@ if __name__ == "__main__":
         print("There was a problem getting the data from Yahoo finance. (I swear this isn't my fault - Yahoo changed their API to only work like a third the time)")
         sys.exit(1)
     #Set up the VITERBI
-    initial = [0.5, 0.5]
     states = ["Buy", "Sell"]
-    obs = ["Up", "Up", "Down"]
+    obs = []
     prev_price = 0
     for price in hist_prices["Adj Close"]:
         if price >= prev_price:
@@ -33,8 +33,6 @@ if __name__ == "__main__":
         prev_price = price
     # # print(obs)
     possible_obs = ["Up", "Down"]
-    trans = [[0.5, 0.5], [0.5, 0.5]]
-    emiss = [[0.5, 0.5], [0.5, 0.5]]
     v = Viterbi(initial, states, obs, possible_obs, trans, emiss)
     v.run()
     v.print_table()
