@@ -22,7 +22,7 @@ class Viterbi:
             self.table[st][0] = self.initial[st]
         #find the value for each state at each time
         for ob in range(self.num_obs):
-            observed = self.possible_obs.index(obs[ob])
+            observed = self.possible_obs.index(self.obs[ob])
             for i in range(self.num_states):
                 prob = []
                 save_state = 0
@@ -71,21 +71,33 @@ class Viterbi:
             print(bt + " ", end='')
         print("")
 
-if __name__ == "__main__":
-    states = ["Balanced", "Loaded_Heads", "Loaded_Tails"]
-    obs = ["Tails", "Tails", "Heads", "Heads", "Tails"]
-    possible_obs = ["Heads", "Tails"]
-    initial = [0.333, 0.333, 0.333]
-    #   trans matrix follows the following pattern:
-    #       [[balanced->balanced, loaded_heads->balanced, loaded_tails->balanced],
-    #       [balanced->loaded_heads, loaded_heads->loaded_heads, loaded_tails->loaded_heads],
-    #       [balanced->loaded_tails, loaded_heads->loaded_tails, loaded_tails->loaded_tails]]
-    trans = [[0.45, 0.52, 0.25], [0.35, 0.3, 0.13], [0.2, 0.18, 0.62]]
-    #   emiss matrix follows the following pattern:
-    #   [[balanced->heads, balanced->tails], [loaded_heads->heads, loaded_heads->tails] ...]
-    emiss = [[0.5, 0.5], [0.85, 0.15], [0.1, 0.9]]
-    v = Viterbi(initial, states, obs, possible_obs, trans, emiss)
-    v.run()
-    v.print_table()
-    v.print_backtrack_table()
-    v.print_backtrack()
+# if __name__ == "__main__":
+#     states = ["Balanced", "Loaded_Heads", "Loaded_Tails"]
+#     obs = ["Tails", "Tails", "Heads", "Heads", "Tails"]
+#     possible_obs = ["Heads", "Tails"]
+#     initial = [0.333, 0.333, 0.333]
+#     #   trans matrix follows the following pattern:
+#     #       [[balanced->balanced, loaded_heads->balanced, loaded_tails->balanced],
+#     #       [balanced->loaded_heads, loaded_heads->loaded_heads, loaded_tails->loaded_heads],
+#     #       [balanced->loaded_tails, loaded_heads->loaded_tails, loaded_tails->loaded_tails]]
+#     trans = [[0.45, 0.52, 0.25], [0.35, 0.3, 0.13], [0.2, 0.18, 0.62]]
+#     #   emiss matrix follows the following pattern:
+#     #   [[balanced->heads, balanced->tails], [loaded_heads->heads, loaded_heads->tails] ...]
+#     emiss = [[0.5, 0.5], [0.85, 0.15], [0.1, 0.9]]
+#     v = Viterbi(initial, states, obs, possible_obs, trans, emiss)
+#     v.run()
+#     v.print_table()
+#     v.print_backtrack_table()
+#     v.print_backtrack()
+# if __name__ == "__main__":
+#     initial = [0.5, 0.5]
+#     states = ["Buy", "Sell"]
+#     obs = ["Up", "Up", "Down"]
+#     possible_obs = ["Up", "Down"]
+#     trans = [[0.5, 0.5], [0.5, 0.5]]
+#     emiss = [[0.5, 0.5], [0.5, 0.5]]
+#     v = Viterbi(initial, states, obs, possible_obs, trans, emiss)
+#     v.run()
+#     v.print_table()
+#     v.print_backtrack_table()
+#     v.print_backtrack()
