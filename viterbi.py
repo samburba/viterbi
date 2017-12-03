@@ -1,4 +1,5 @@
 import numpy as np
+from pandas import * #NOT import, just used to visualize table easier
 class Viterbi:
     def __init__(self, initial, states, obs, possible_obs, trans, emiss):
         self.initial = initial
@@ -9,7 +10,7 @@ class Viterbi:
         self.emiss = emiss
         self.num_states = len(self.states)
         self.num_obs = len(self.obs)
-        self.table = np.zeros((self.num_states, self.num_obs))
+        self.table = np.zeros((self.num_states, self.num_obs + 1))
 
     def get_obs_num(self, obs):
         return self.possible_obs.index(obs)
@@ -20,50 +21,46 @@ class Viterbi:
         for st in range(self.num_states):
             self.table[st][0] = self.initial[st]
         #find the value for each state at each time
-        prob = []
+
         #B
-        print(self.table[0][0])
-        print(self.trans[0][0])
-        print(self.emiss[0][1])
-        print(self.table[0][0])
-        print(self.trans[0][1])
-        print(self.emiss[0][1])
-        print(self.table[0][0])
-        print(self.trans[0][2])
-        print(self.emiss[0][1])
-        print(prob)
-        #L
-        print(self.table[1][0])
-        print(self.trans[1][0])
-        print(self.emiss[1][1])
-        print(self.table[1][0])
-        print(self.trans[1][1])
-        print(self.emiss[1][1])
-        print(self.table[1][0])
-        print(self.trans[1][2])
-        print(self.emiss[1][1])
-        print(prob)
-        print("in loop")
+        # print(self.table[0][0])
+        # print(self.trans[0][0])
+        # print(self.emiss[0][1])
+        # print(self.table[1][0])
+        # print(self.trans[0][1])
+        # print(self.emiss[0][1])
+        # print(self.table[2][0])
+        # print(self.trans[0][2])
+        # print(self.emiss[0][1])
+        # print(prob)
+        # #L
+        # print(self.table[1][0])
+        # print(self.trans[1][0])
+        # print(self.emiss[1][1])
+        # print(self.table[1][0])
+        # print(self.trans[1][1])
+        # print(self.emiss[1][1])
+        # print(self.table[1][0])
+        # print(self.trans[1][2])
+        # print(self.emiss[1][1])
+        # print(prob)
         for ob in range(self.num_obs):
             observed = self.possible_obs.index(obs[ob])
+            if observed:
+                print("Tails")
+            else:
+                print("Heads")
             for i in range(self.num_states):
+                prob = []
                 for j in range(self.num_states):
-                    #p = self.table[i][0] * self.trans[i][j] * self.emiss[i][1]
+                    #table is wrong -.-
+                    prob.append(self.table[j][ob] * self.trans[i][j] * self.emiss[i][observed])
                     print(self.table[i][ob])
-                    print(self.trans[i][j])
-                    print(self.emiss[i][observed])
-
-        # for ob in range(self.num_obs - 1):
-        #     prob = []
-        #     for st1 in range(self.num_states):
-        #         for st2 in range(self.num_states):
-        #             p = self.table[ob][st1] * self.trans[ob][st2] * self.emiss[0][self.get_obs_num(self.obs[ob])]
-        #             prob.append(p)
-        #             print(prob)
-        # print(prob)
+                print(DataFrame(prob))
+                self.table[i][ob + 1] = max(prob);
 
     def print_table(self):
-        print(self.table)
+        print( DataFrame(self.table))
 
 if __name__ == "__main__":
     states = ["Balanced", "Loaded_Heads", "Loaded_Tails"]
