@@ -11,56 +11,50 @@ class Viterbi:
         self.num_states = len(self.states)
         self.num_obs = len(self.obs)
         self.table = np.zeros((self.num_states, self.num_obs + 1))
-
-    def get_obs_num(self, obs):
-        return self.possible_obs.index(obs)
+        self.backtrack_table = np.empty((self.num_states, self.num_obs), dtype="S15")
 
     def run(self):
+        #START VITERBI
         path = []
         #set the initial values to the start of the table
         for st in range(self.num_states):
             self.table[st][0] = self.initial[st]
         #find the value for each state at each time
-
-        #B
-        # print(self.table[0][0])
-        # print(self.trans[0][0])
-        # print(self.emiss[0][1])
-        # print(self.table[1][0])
-        # print(self.trans[0][1])
-        # print(self.emiss[0][1])
-        # print(self.table[2][0])
-        # print(self.trans[0][2])
-        # print(self.emiss[0][1])
-        # print(prob)
-        # #L
-        # print(self.table[1][0])
-        # print(self.trans[1][0])
-        # print(self.emiss[1][1])
-        # print(self.table[1][0])
-        # print(self.trans[1][1])
-        # print(self.emiss[1][1])
-        # print(self.table[1][0])
-        # print(self.trans[1][2])
-        # print(self.emiss[1][1])
-        # print(prob)
         for ob in range(self.num_obs):
             observed = self.possible_obs.index(obs[ob])
-            if observed:
-                print("Tails")
-            else:
-                print("Heads")
             for i in range(self.num_states):
                 prob = []
+                save_state = 0
+                save_max = 0
                 for j in range(self.num_states):
-                    #table is wrong -.-
                     prob.append(self.table[j][ob] * self.trans[i][j] * self.emiss[i][observed])
-                    print(self.table[i][ob])
-                print(DataFrame(prob))
-                self.table[i][ob + 1] = max(prob);
+                    #there is probably a better way to do this...
+                    if j == 0:
+                        save_max = prob[0]
+                    elif prob[j] > save_max:
+                        save_max = prob[j]
+                        save_state = j
+                self.backtrack_table[i][ob] = self.states[save_state]
+                self.table[i][ob + 1] = max(prob)
+        #END VITERBI
+        #START BACKTRACK
+        #get most probable state in the last observation
+        prob = []
+        for i in range(self.num_states):
+            prob.append(self.table[i][self.num_obs])
+        max_prob = max(prob)
+        print(max_prob)
+        #follow the backtrack
+        for i in range(self.num_obs, 0, -1):
+            break
+
+        #END BACKTRACK
 
     def print_table(self):
-        print( DataFrame(self.table))
+        print(DataFrame(self.table))
+
+    def print_backtrack_table(self):
+        print(DataFrame(self.backtrack_table))
 
 if __name__ == "__main__":
     states = ["Balanced", "Loaded_Heads", "Loaded_Tails"]
@@ -78,3 +72,4 @@ if __name__ == "__main__":
     v = Viterbi(initial, states, obs, possible_obs, trans, emiss)
     v.run()
     v.print_table()
+    v.print_backtrack_table()
