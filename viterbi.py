@@ -13,6 +13,7 @@ class Viterbi:
         self.table = np.zeros((self.num_states, self.num_obs + 1))
         self.backtrack_table = np.empty((self.num_states, self.num_obs), dtype="U16")
         self.backtrack = [self.num_states]
+        self.backtrack_probabilites = []
 
     def run(self):
         #START VITERBI
@@ -44,13 +45,18 @@ class Viterbi:
         for i in range(self.num_obs, -1, -1):
             prob = []
             save_max = 0
+            tmp = 0
             for j in range(self.num_states):
                 prob.append(self.table[j][i])
                 if(self.table[j][i] > prob[save_max]):
                     save_max = j
+                tmp += self.table[j][i]
             backtrack.append(self.states[save_max])
+            self.backtrack_probabilites.append(self.table[save_max][i]/tmp)
+
         #make more readable by reversing
         self.backtrack = backtrack[::-1]
+        self.backtrack_probabilites = self.backtrack_probabilites[::-1]
         #END BACKTRACK
 
     def print_table(self):
@@ -70,6 +76,12 @@ class Viterbi:
         for bt in self.backtrack:
             print(bt + " ", end='')
         print("")
+
+    def get_backtrack(self):
+        return self.backtrack
+
+    def get_backtrack_probabilites(self):
+        return self.backtrack_probabilites
 
 # if __name__ == "__main__":
 #     states = ["Balanced", "Loaded_Heads", "Loaded_Tails"]
