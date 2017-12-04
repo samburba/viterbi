@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from viterbi import Viterbi
 from config import initial, trans, emiss
-
+from datetime import timedelta
 if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Invalid amount of arguments")
@@ -60,11 +60,26 @@ if __name__ == "__main__":
     to_print["Output"] = backtrack
     #to_print["Probabilities"] = backtrack_prob
     print(to_print)
-    hist_prices['Adj Close'].plot(grid="True")
+    fig = hist_prices['Adj Close'].plot(grid="True")
+    i = start
+    tmp_backtrack = backtrack
+    prev_state = ""
+    print(len(tmp_backtrack))
+    while i < end:
+        if i.weekday() < 5:
+            if tmp_backtrack[0] == "Buy":
+                plt.axvspan(i, i + timedelta(days=1), facecolor='g', alpha=0.5)
+                prev_state = "Buy"
+            else:
+                plt.axvspan(i, i + timedelta(days=1), facecolor='r', alpha=0.5)
+                prev_state = "Sell"
+            tmp_backtrack.pop(0)
+        i += timedelta(days=1)
+
     # fig = plt.figure()
-    # ax = fig.add_subplot(1, 1, 1)
-    # ax.plot(hist_prices.index, hist_prices['Adj Close'], label=stock_name)
-    # ax.set_xlabel('Date')
-    # ax.set_ylabel('Adjusted closing price ($)')
+    #ax = fig.add_subplot(1, 1, 1)
+    #ax.plot(hist_prices.index, hist_prices['Adj Close'], label=stock_name)
+    #ax.set_xlabel('Date')
+    #ax.set_ylabel('Adjusted closing price ($)')
     # ax.legend()
-    #plt.show()
+    plt.show()
