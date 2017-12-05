@@ -1,5 +1,5 @@
 # Stock Market Trading API
-## Written by Sam Burba
+### Written by Sam Burba
 
 ---
 ### About:
