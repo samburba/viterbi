@@ -2,6 +2,7 @@ import sys, datetime
 import pandas_datareader as pdr
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from viterbi import Viterbi
 from config import initial, trans, emiss
 from datetime import timedelta
@@ -70,4 +71,8 @@ if __name__ == "__main__":
                 tmp_backtrack.pop(0)
         i += timedelta(days=1)
     plt.title(stock_name + " from " + start.strftime("%B %d, %Y") + " to " + end.strftime("%B %d, %Y"))
+    green_patch = mpatches.Patch(color='g', alpha=0.5, label='Buy')
+    red_patch = mpatches.Patch(color='r', alpha=0.5, label='Sell')
+    blue_patch = mpatches.Patch(color='b', alpha=0.5, label=stock_name)
+    plt.legend(handles=[green_patch, red_patch, blue_patch])
     plt.show()
