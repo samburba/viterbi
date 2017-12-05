@@ -20,7 +20,6 @@ if __name__ == "__main__":
          if end.weekday() >= 5:
             print("Error: Ending date cannot be during the weekend. " + str(end) + " is on a weekend.")
             sys.exit(1)
-
     except ValueError:
         print("All dates must be in mm/dd/yyyy format")
         sys.exit(1)
@@ -43,7 +42,6 @@ if __name__ == "__main__":
         obs_prices.append(price)
         obs_delta.append(price - prev_price)
         prev_price = price
-    # # print(obs)
     possible_obs = ["Up", "Down"]
     v = Viterbi(initial, states, obs, possible_obs, trans, emiss)
     v.run()
@@ -51,22 +49,12 @@ if __name__ == "__main__":
     #v.print_backtrack_table()
     #v.print_backtrack()
 
-    #LONG
-    #print(v.get_backtrack())
-    #print(obs_prices)
-    #END LONG
-
-
-    #hist_prices = hist_prices['Adj Close']
     #make a graph
     backtrack = v.get_backtrack()
     backtrack.pop(0)
-    #backtrack_prob = v.get_backtrack_probabilites()
-    #backtrack_prob.pop(0)
     to_print = pd.DataFrame(hist_prices['Adj Close'])
     to_print["Delta"] = obs_delta
     to_print["Output"] = backtrack
-    #to_print["Probabilities"] = backtrack_prob
     print(to_print)
     fig = hist_prices['Adj Close'].plot(grid="True")
     i = start
@@ -74,17 +62,12 @@ if __name__ == "__main__":
     prev_state = ""
     while i < end:
         if i.weekday() < 5:
-            if tmp_backtrack[0] == "Buy":
-                plt.axvspan(i, i + timedelta(days=1), facecolor='g', alpha=0.5)
-            else:
-                plt.axvspan(i, i + timedelta(days=1), facecolor='r', alpha=0.5)
-            tmp_backtrack.pop(0)
+            if tmp_backtrack:
+                if tmp_backtrack[0] == "Buy":
+                    plt.axvspan(i, i + timedelta(days=1), facecolor='g', alpha=0.5)
+                else:
+                    plt.axvspan(i, i + timedelta(days=1), facecolor='r', alpha=0.5)
+                tmp_backtrack.pop(0)
         i += timedelta(days=1)
-
-    # fig = plt.figure()
-    #ax = fig.add_subplot(1, 1, 1)
-    #ax.plot(hist_prices.index, hist_prices['Adj Close'], label=stock_name)
-    #ax.set_xlabel('Date')
-    #ax.set_ylabel('Adjusted closing price ($)')
-    # ax.legend()
+    plt.title(stock_name + " from " + start.strftime("%B %d, %Y") + " to " + end.strftime("%B %d, %Y"))
     plt.show()
