@@ -7,19 +7,27 @@ from config import initial, trans, emiss
 from datetime import timedelta
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Invalid amount of arguments")
+        print("Invalid usage. (python run.py STOCK START_DAY END_DAY)")
         sys.exit(0)
     stock_name = sys.argv[1]
     #dates MUST be in mm/dd/yyyy in order for this to work
     try:
          start = datetime.datetime.strptime(sys.argv[2], "%m/%d/%Y")
          end = datetime.datetime.strptime(sys.argv[3], "%m/%d/%Y")
+         if start.weekday() >= 5:
+             print("Error: Starting date cannot be during the weekend. " + str(start) + " is on a weekend.")
+             sys.exit(1)
+         if end.weekday() >= 5:
+            print("Error: Ending date cannot be during the weekend. " + str(end) + " is on a weekend.")
+            sys.exit(1)
+
     except ValueError:
         print("All dates must be in mm/dd/yyyy format")
+        sys.exit(1)
     try:
         hist_prices = pdr.DataReader(stock_name, "yahoo", start, end)
     except:
-        print("There was a problem getting the data from Yahoo finance. (I swear this isn't my fault - Yahoo changed their API to only work like a third the time)")
+        print("There was a problem getting the data from Yahoo finance API.")
         sys.exit(1)
     #Set up the VITERBI
     states = ["Buy", "Sell"]
@@ -64,15 +72,12 @@ if __name__ == "__main__":
     i = start
     tmp_backtrack = backtrack
     prev_state = ""
-    print(len(tmp_backtrack))
     while i < end:
         if i.weekday() < 5:
             if tmp_backtrack[0] == "Buy":
                 plt.axvspan(i, i + timedelta(days=1), facecolor='g', alpha=0.5)
-                prev_state = "Buy"
             else:
                 plt.axvspan(i, i + timedelta(days=1), facecolor='r', alpha=0.5)
-                prev_state = "Sell"
             tmp_backtrack.pop(0)
         i += timedelta(days=1)
 
