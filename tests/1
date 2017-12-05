@@ -1,0 +1,2 @@
+#!/bin/bash
+python run.py AAPL 08/21/2017 9/13/2017 

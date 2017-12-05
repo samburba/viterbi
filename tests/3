@@ -1,0 +1,2 @@
+#!/bin/bash
+python run.py GOOGL 1/2/2017 12/4/2017
