@@ -19,5 +19,5 @@ python run.py [TICKER SYMBOL] [START DATE] [END DATE]
 There are three additional tests provided. To run the tests:
 ```bash
 tests/[NUMBER]
-'''
+```
 [NUMBER] = 1, 2, or 3
